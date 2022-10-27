@@ -1,0 +1,63 @@
+* AQFP_AND_BUFFER test circuit
+
+Iin_a	    0	    1	    pwl(0 0 5p -20u 500p -20u 510p -20u 1000p -20u 1010p +20u 1500p +20u 1510p +20u)
+Iin_b	    0	    2	    pwl(0 0 5p -20u 500p -20u 510p +20u 1000p +20u 1010p -20u 1500p -20u 1510p +20u)
+Iclk1	    0	    3	    pwl(0 0 100p 0 120p 1.5m 400p 1.5m 420p 0 600p 0 620p 1.5m 900p 1.5m 920p 0 1100p 0 1120p 1.5m 1400p 1.5m 1420p 0 1600p 0 1620p 1.5m 1900p 1.5m 1920p 0)
+Iclk2       0       6       pwl(0 0 100p 0 120p 1.5m 400p 1.5m 420p 0 600p 0 620p 1.5m 900p 1.5m 920p 0 1100p 0 1120p 1.5m 1400p 1.5m 1420p 0 1600p 0 1620p 1.5m 1900p 1.5m 1920p 0)
+X1          1       2       4       3       0       AQFP_AND
+X2          4       5       6       0       AQFP_BUFFER 
+Lout        5       0       2p
+
+.subckt AQFP_AND a b q xin xout
+Iin_const_0	    0	    1	    pwl(0 0 5p -20u)
+X1              a       2       xin     4       AQFP_BUFFER
+X2              b       3       4       xout    AQFP_BUFFER
+X3              1       2       3       q       BRANCH_3_1
+.ends AQFP_AND
+
+.subckt AQFP_BUFFER a q xin xout
+.model jjmod jj(rtype=1, vg=2.8mV, cap=0.07pF, r0=160, rn=16, icrit=0.1mA)
+.param B1=0.5
+.param B2=0.5
+.param Lin=1.22p
+.param Lx=5.19p
+.param L1=1.42p
+.param L2=1.42p
+.param Lq=8.27p
+.param Lout=28.4p
+.param K1=-0.22
+.param K2=-0.22
+.param K3=+0.472
+Lin     a       1       Lin
+Lx      xin     xout    Lx
+B1	    0	    2	    jjmod   area=B1
+L1	    2	    1	    L1
+L2	    1	    3	    L2
+B2	    3	    0	    jjmod	area=B2
+Lq	    1	    0	    Lq
+Lout	q	    0	    Lout
+K1	    Lx	    L1	    K1
+K2	    Lx	    L2	    K2
+K3	    Lq	    Lout	K3
+.ends AQFP_BUFFER
+
+.subckt BRANCH_3_1 a b c q
+.param L1=6.8p
+.param L2=6.8p
+.param L3=6.8p
+.param Lout=2p
+L1      a       1       L1
+L2      b       1       L2
+L3      c       1       L3
+Lout    1       q       Lout
+.ends BRANCH_3_1
+
+.tran 0.25p 2000p 0 0.25p
+.print i(Iin_a)
+.print i(Iin_b)
+.print i(Iclk1)
+.print i(Iclk2)
+.print i(Lout)
+
+
+
