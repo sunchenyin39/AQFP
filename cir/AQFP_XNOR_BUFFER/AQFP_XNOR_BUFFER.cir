@@ -103,6 +103,7 @@ Lout    1       q       Lout
 .print i(Iclk2)
 .print i(Iclk3)
 .print i(Iclk4)
+.print i(Iclk5)
 .print i(Lout)
 
 
